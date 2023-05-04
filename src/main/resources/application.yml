@@ -7,6 +7,8 @@ uri:
     cuentas: https://pokeapi.co
 
 spring:
+  application:
+    name: curso-spring-gateway
   cloud:
     gateway:
       default-filters:
@@ -27,34 +29,25 @@ spring:
             - Method=GET
             - Path=/v1/api/cliente/all
           filters:
-            - AddRequestHeader=X-GATEWAY-REQUEST-HEADER,GATEWAY-SOLICITUD
-            - AddResponseHeader=X-GATEWAY-RESPONSE-HEADER,GATEWAY-RESPONSE
-        - id: all_clientes_contexto
-          uri: http://localhost:8080
-          predicates:
-            - Method=GET
-            - Path=/promerica/cliente/all
-          filters:
-            - RewritePath=/promerica/, /v1/api/
-            - AddRequestHeader=X-GATEWAY-REQUEST-HEADER,GATEWAY-SOLICITUD
-            - AddResponseHeader=X-GATEWAY-RESPONSE-HEADER,GATEWAY-RESPONSE
-        - id: cliente
+            - AddRequestHeader=X-GATEWAY-REQUEST-HEADER,GATEWAY-SOLITUD
+            - AddResponseHeader=X-GATEYWAY-RESPONSE-HEADER,GATEWAY_RESPONSE
+        - id: cliente_id
           uri: http://localhost:8080
           predicates:
             - Method=GET,POST,PUT
-            - Path=/v1/api/cliente/{id}
+            - Path=/promerica/clientes-por-id/{id}
           filters:
-            - AddRequestHeader=X-GATEWAY-REQUEST-HEADER,GATEWAY-SOLICITUD
-            - AddResponseHeader=X-GATEWAY-RESPONSE-HEADER,GATEWAY-RESPONSE
-        - id: cliente_contexto
-          uri: http://localhost:8080
-          predicates:
-            - Method=GET,POST,PUT
-            - Path=/promerica/cliente/{id}
-          filters:
-            - RewritePath=/promerica/, /v1/api/
-            - AddRequestHeader=X-GATEWAY-REQUEST-HEADER,GATEWAY-SOLICITUD
-            - AddResponseHeader=X-GATEWAY-RESPONSE-HEADER,GATEWAY-RESPONSE
+            - RewritePath=/promerica/clientes-por-id/, /v1/api/cliente/
+            - AddRequestHeader=X-GATEWAY-REQUEST-HEADER,GATEWAY-SOLITUD
+            - AddResponseHeader=X-GATEYWAY-RESPONSE-HEADER,GATEWAY_RESPONSE
 
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
 
 
